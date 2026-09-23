@@ -27,10 +27,17 @@ type DashboardProps = {
 export function Dashboard({ usersApi: api = usersApi }: DashboardProps) {
   const [quickFilter, setQuickFilter] = useState('');
   const columnDefs = useMemo(() => columnDefinitions, []);
-  const { data: users, error, isPending, refetch } = useQuery({
+  const {
+    data: users,
+    error,
+    isPending,
+    refetch,
+  } = useQuery({
     queryKey: ['users'],
     queryFn: api.getUsers,
   });
+  const isReady = !isPending && !error;
+  const usersCount = users?.length ?? 0;
 
   return (
     <main className="dashboard">
@@ -44,9 +51,9 @@ export function Dashboard({ usersApi: api = usersApi }: DashboardProps) {
         <div className="section-heading">
           <div>
             <h2 id="users-heading">Users</h2>
-            <p>{users?.length ?? 0} active users</p>
+            <p>{usersCount} active users</p>
           </div>
-          {!isPending && !error && (
+          {isReady && (
             <label className="quick-filter">
               Search users
               <input
