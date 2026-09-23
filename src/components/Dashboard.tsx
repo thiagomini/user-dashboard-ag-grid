@@ -31,7 +31,6 @@ export function Dashboard({ usersApi: api = usersApi }: DashboardProps) {
     data: users,
     error,
     isPending,
-    refetch,
   } = useQuery({
     queryKey: ['users'],
     queryFn: api.getUsers,
@@ -68,13 +67,6 @@ export function Dashboard({ usersApi: api = usersApi }: DashboardProps) {
 
         {isPending ? (
           <p role="status">Loading users...</p>
-        ) : error ? (
-          <div role="alert">
-            <p>{error.message}</p>
-            <button type="button" onClick={() => refetch()}>
-              Try again
-            </button>
-          </div>
         ) : (
           <div
             className="ag-theme-quartz grid"
