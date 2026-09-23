@@ -66,3 +66,22 @@ test('sorts the Name column but does not sort the Role column', async ({
   await expect(roleHeader).not.toHaveAttribute('aria-sort');
   await expect(grid.getByRole('row').nth(1)).toContainText('Ada');
 });
+
+test('shows a loading state while users are being fetched', async ({ page }) => {
+  await page.route('**/users.json', () => new Promise(() => {}));
+  await page.reload();
+
+  await expect(page.getByRole('status')).toHaveText('Loading users...');
+});
+
+test('shows an error state when fetching users fails', async ({ page }) => {
+  await page.route('**/users.json', (route) =>
+    route.fulfill({ status: 500 }),
+  );
+  await page.reload();
+
+  await expect(page.getByRole('alert')).toContainText(
+    'Unable to load users. Please try again.',
+  );
+  await expect(page.getByRole('button', { name: 'Try again' })).toBeVisible();
+});
