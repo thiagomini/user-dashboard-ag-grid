@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/experimental-ct-react';
+import { createUIDriver } from './ag-grid-ui-driver';
 import type { User } from '../src/api/users';
 import { App } from '../src/App';
 
@@ -50,6 +51,29 @@ test('renders the supplied users in the corresponding columns', async ({
   await expect(adaRow).toContainText('15/01/2024');
   await expect(adaRow).toContainText('Admin');
   await expect(grid.getByRole('row')).toHaveCount(3);
+});
+
+test('renders the supplied users in the corresponding columns (improved)', async ({
+  mount,
+}) => {
+  const component = await mount(
+    <App fakeUsersApiScenario={{ status: 'success', users }} />,
+  );
+  const grid = createUIDriver(component.getByTestId('user-grid'));
+
+  await expect(grid.getColumnHeader('Name')).toBeVisible();
+  await expect(grid.getColumnHeader('Surname')).toBeVisible();
+  await expect(grid.getColumnHeader('Email')).toBeVisible();
+  await expect(grid.getColumnHeader('Created at')).toBeVisible();
+  await expect(grid.getColumnHeader('Role')).toBeVisible();
+
+  const adaRow = grid.getRow(/Ada Lovelace/);
+  await expect(adaRow).toContainText('ada.lovelace@example.com');
+  await expect(adaRow).toContainText('15/01/2024');
+  await expect(adaRow).toContainText('Admin');
+
+  // Header row plus data rows
+  await expect(grid.getAllRows()).toHaveCount(3);
 });
 
 test('filters the supplied users through the quick filter', async ({
