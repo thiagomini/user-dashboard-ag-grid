@@ -36,22 +36,11 @@ export function Dashboard({ usersApi: api = usersApi }: DashboardProps) {
     queryFn: api.getUsers,
   });
   const isReady = !isPending && !error;
-  const usersCount = users?.length ?? 0;
 
   return (
     <main className="dashboard">
-      <header>
-        <p className="eyebrow">Acme Admin</p>
-        <h1>User Dashboard</h1>
-        <p className="subtitle">Manage the users of your application.</p>
-      </header>
-
       <section aria-labelledby="users-heading" className="user-list">
         <div className="section-heading">
-          <div>
-            <h2 id="users-heading">Users</h2>
-            <p>{usersCount} active users</p>
-          </div>
           {isReady && (
             <label className="quick-filter">
               Search users
